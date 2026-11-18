@@ -150,9 +150,12 @@ button.hc:active{transform:scale(.95)}
 /* 학습 카드 */
 .learn{display:flex;flex-direction:column;gap:12px}
 .lcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
-.lcard .kname{font-family:var(--f-display);font-size:30px;font-weight:400;color:var(--blue)}
-.kv{display:grid;grid-template-columns:52px 1fr;gap:6px 10px;font-size:15px}
-.kv dt{font-weight:700;color:var(--muted)}
+.lcard .kname{font-family:var(--f-display);font-size:38px;font-weight:400;color:var(--blue)}
+.kv{display:grid;grid-template-columns:56px 1fr;gap:10px 12px;font-size:19px;line-height:1.6;word-break:keep-all}
+.kv dt{font-weight:700;color:var(--muted);font-size:17px}
+.hc .eum{font-size:20px;font-weight:900;border-top:1.5px dashed var(--muted);text-align:center;padding:2px 0;color:var(--blue)}
+.lh .hc{width:80px}.lh .hc .hun{font-size:15px;font-weight:700;min-height:26px;padding:3px 2px}.lh .hc .ch{font-size:42px}
+.lh .hc.small{width:62px}.lh .hc.small .hun{font-size:13px}.lh .hc.small .ch{font-size:32px}.lh .hc.small .eum{font-size:17px}
 .kv dd{margin:0;min-width:0}
 .dots{display:flex;gap:6px;justify-content:center}
 .dots i{width:9px;height:9px;border-radius:99px;background:var(--line)}
@@ -194,6 +197,8 @@ button.hc:active{transform:scale(.95)}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:25}
 @media (max-width:420px){
   .hc{width:56px}.hc .ch{font-size:30px}
+  .lh .hc{width:72px}.lh .hc .ch{font-size:36px}.lh .hc.small{width:56px}.lh .hc.small .hun{font-size:12px}
+  .kv{font-size:18px}.lcard .kname{font-size:34px}
   .slot{width:46px;height:52px;font-size:24px}.tile{width:48px;height:48px;font-size:21px}
   .opt{font-size:17px}
   .hero{grid-template-columns:1fr}.seal{width:64px;height:64px;font-size:24px}
@@ -232,7 +237,7 @@ const pick = (arr, n, not = []) => shuffle(arr.filter(x => !not.includes(x))).sl
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const chars = d => [...d.h];
 const syl = d => [...d.k];
-const hc = (ch, hun, cls = '', tag = 'div', attrs = '') => `<${tag} class="hc ${cls}" ${attrs}><span class="hun">${esc(hun)}</span><span class="ch">${esc(ch)}</span></${tag}>`;
+const hc = (ch, hun, cls = '', tag = 'div', attrs = '', eum = '') => `<${tag} class="hc ${cls}" ${attrs}><span class="hun">${esc(hun)}</span><span class="ch">${esc(ch)}</span>${eum ? `<span class="eum">${esc(eum)}</span>` : ''}</${tag}>`;
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
 // 한자 → 훈 사전 (오답 보기용)
@@ -408,7 +413,7 @@ function map() {
 function learnCard(d) {
   return `<div class="lcard">
     <div class="row"><span class="kname">${esc(d.k)}</span><span class="spacer"></span><span class="chip">No.${d.n}</span></div>
-    <div class="hcards">${chars(d).map((c, i) => hc(c, d.hun[i], chars(d).length > 5 ? 'small' : '')).join('')}</div>
+    <div class="hcards lh">${chars(d).map((c, i) => hc(c, d.hun[i], chars(d).length > 5 ? 'small' : '', 'div', '', syl(d)[i])).join('')}</div>
     <dl class="kv">
       <dt>겉뜻</dt><dd>${esc(d.lit)}</dd>
       <dt>속뜻</dt><dd><b>${esc(d.mean)}</b></dd>
