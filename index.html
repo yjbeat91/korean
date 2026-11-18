@@ -85,7 +85,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
 /* 문제 영역 */
 .qhead{display:flex;align-items:center;gap:10px}
 .qnum{background:var(--blue);color:#fff;border-radius:999px;min-width:40px;height:30px;display:grid;place-items:center;font-weight:900;padding:0 10px}
-.qtitle{color:var(--blue);font-weight:700}
+.qtitle{color:var(--blue);font-weight:700;word-break:keep-all}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:16px}
 .progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
 .progress>i{display:block;height:100%;background:var(--blue);transition:width .3s}
@@ -133,6 +133,18 @@ button.hc:active{transform:scale(.95)}
 .mbad{animation:shake .35s}
 .matchsvg{position:absolute;inset:0;pointer-events:none;overflow:visible}
 
+/* 짝짓기 */
+.pairgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ptile{min-height:96px;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 8px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;text-align:center;word-break:keep-all;min-width:0;transition:transform .12s,opacity .3s,background .2s}
+.ptile:active{transform:scale(.96)}
+.ptile.isk{background:var(--blue-soft)}
+.ptile .pk{font-size:20px;font-weight:900}
+.ptile .ph{font-size:24px;line-height:1.3;word-break:break-all}
+.ptile .pm{font-size:14px;line-height:1.45}
+.ptile .pm em{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--muted)}
+.ptile.psel{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue);transform:translateY(-2px)}
+.ptile.pbad{border-color:var(--bad);background:var(--bad-soft);animation:shake .35s}
+.ptile.pdone{border-color:var(--good);background:var(--good-soft);opacity:.35;transform:scale(.94)}
 /* 피드백 */
 .feedback{border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
 .feedback.good{background:var(--good-soft);border:1.5px solid var(--good)}
@@ -201,6 +213,7 @@ button.hc:active{transform:scale(.95)}
   .kv{font-size:18px}.lcard .kname{font-size:34px}
   .slot{width:46px;height:52px;font-size:24px}.tile{width:48px;height:48px;font-size:21px}
   .opt{font-size:17px}
+  .pairgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ptile{min-height:84px}.ptile .pk{font-size:18px}.ptile .pm{font-size:13px}
   .hero{grid-template-columns:1fr}.seal{width:64px;height:64px;font-size:24px}
   .match{grid-template-columns:minmax(0,.75fr) minmax(0,1.5fr);gap:8px}
   .mright .hc{width:38px}.mright .hc .ch{font-size:19px}
@@ -225,7 +238,7 @@ for (let i = 0; i < IDIOMS.length; i += STAGE_SIZE) STAGES.push(IDIOMS.slice(i, 
 
 /* ---------- 저장 ---------- */
 const KEY = 'seongeo-seodang-v1';
-const defaultState = () => ({ xp: 0, stars: {}, seen: {}, wrong: {}, best: 0, sound: true, unlockAll: false, streak: 0, lastDay: '' });
+const defaultState = () => ({ xp: 0, stars: {}, seen: {}, wrong: {}, best: 0, pairBest: 0, sound: true, unlockAll: false, streak: 0, lastDay: '' });
 let S = defaultState();
 try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(defaultState(), JSON.parse(raw)); } catch (e) {}
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -340,7 +353,7 @@ function go(v, arg) {
   if (v === 'home') return home();
   if (v === 'map') return map();
   if (v === 'stage') return learnStage(+arg);
-  if (v === 'speed') return speedIntro();
+  if (v === 'speed') return pairIntro();
   if (v === 'dex') return dex();
   if (v === 'wrong') return wrongNote();
   if (v === 'sheet') return sheet(+arg || 0);
@@ -368,13 +381,13 @@ function home() {
     <div class="stats">
       <div class="stat"><b>${collected}<small style="font-size:12px">/204</small></b><span>모은 성어 카드</span></div>
       <div class="stat"><b>${totalStars}<small style="font-size:12px">/${STAGES.length * 3}</small></b><span>모은 별</span></div>
-      <div class="stat"><b>${S.best}</b><span>스피드 최고점</span></div>
+      <div class="stat"><b>${S.pairBest || 0}</b><span>짝짓기 최고점</span></div>
     </div>
   </div>
   <div class="menu">
     <button class="main" data-go="stage" data-arg="${nextIdx}"><span class="mt">▶ ${nextIdx + 1}단계 도전하기</span><span class="md">${STAGES[nextIdx].map(d => d.k).join(' · ')}</span></button>
     <button data-go="map"><span class="mk">地圖</span><span class="mt">모험 지도</span><span class="md">51단계 · ${cleared}단계 통과</span></button>
-    <button data-go="speed"><span class="mk">速</span><span class="mt">스피드 퀴즈</span><span class="md">60초 타임어택</span></button>
+    <button data-go="speed"><span class="mk">雙</span><span class="mt">짝짓기 퀴즈</span><span class="md">카드 두 장을 짝지어요</span></button>
     <button data-go="dex"><span class="mk">圖鑑</span><span class="mt">성어 도감</span><span class="md">204장 카드 모으기</span></button>
     <button data-go="wrong"><span class="mk">錯</span><span class="mt">오답 노트</span><span class="md">${wrongN ? `다시 볼 성어 ${wrongN}개` : '틀린 문제가 여기에 모여요'}</span></button>
     <button data-go="sheet" data-arg="${nextIdx}" style="grid-column:1/-1"><span class="mt">학습지 보기</span><span class="md">'어휘력이 독해력이다' 형식의 4문항 학습지 + 정답</span></button>
@@ -652,63 +665,106 @@ function stageFail(G) {
   </div>`);
 }
 
-/* ---------- 스피드 퀴즈 ---------- */
-function speedIntro() {
-  view = 'speed';
-  const pool = Object.keys(S.seen).length >= 8 ? '모은 성어 카드' : '204개 전체 성어';
-  render(`${topbar()}<div class="panel result">
-    <div class="seal" style="margin:0 auto">速</div>
-    <h2>스피드 퀴즈</h2>
-    <p style="margin:0">60초 동안 최대한 많이 맞혀요. 맞히면 +2초, 틀리면 -5초!<br><span class="muted">출제 범위: ${pool} · 최고점 ${S.best}</span></p>
-    <button class="big red" id="go">시작!</button>
+/* ---------- 짝짓기 퀴즈 ---------- */
+const PAIR_MODES = {
+  han: { name: '성어 ↔ 한자', desc: '한글 성어와 한자 성어를 짝지어요', mk: '漢' },
+  mean: { name: '성어 ↔ 속뜻', desc: '성어와 속뜻을 짝지어요', mk: '意' },
+  mix: { name: '섞어서', desc: '한자·속뜻·겉뜻이 섞여 나와요', mk: '混' }
+};
+function pairIntro() {
+  view = 'pair';
+  const seenN = Object.keys(S.seen).length;
+  const pool = seenN >= 6 ? `모은 성어 카드 ${seenN}개` : '204개 전체 성어';
+  render(`${topbar()}<div class="panel">
+    <div class="result"><div class="seal" style="margin:0 auto">雙</div><h2>짝짓기 퀴즈</h2>
+    <p style="margin:0">카드 12장 중에서 서로 짝이 되는 두 장을 차례로 누르세요.<br>3판을 빨리, 실수 없이 끝낼수록 점수가 높아요!</p>
+    <p class="muted" style="margin:0">출제 범위: ${pool} · 최고점 ${S.pairBest || 0}</p></div>
+    <div class="menu">${Object.entries(PAIR_MODES).map(([k, m]) => `<button data-mode="${k}" ${k === 'mix' ? 'style="grid-column:1/-1"' : ''}><span class="mk">${m.mk}</span><span class="mt">${m.name}</span><span class="md">${m.desc}</span></button>`).join('')}</div>
   </div>`);
-  document.getElementById('go').onclick = speedRun;
+  $app.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { beep('tap'); pairRun(b.dataset.mode); });
 }
-function speedRun() {
+function pairRun(mode) {
+  view = 'pair';
   const seenList = IDIOMS.filter(d => S.seen[d.n]);
-  const pool = seenList.length >= 8 ? seenList : IDIOMS;
-  let time = 60, score = 0, combo = 0, count = 0, ended = false, lock = false;
-  const timer = setInterval(() => { time--; const t = document.getElementById('tm'); if (t) t.textContent = time; if (time <= 0) end(); }, 1000);
-  function end() {
-    if (ended) return; ended = true; clearInterval(timer);
-    const isBest = score > S.best; if (isBest) S.best = score;
-    S.xp += score; save(); beep('win'); if (isBest) confetti();
-    render(`${topbar()}<div class="panel result">
-      <h2>${isBest ? '새 최고 기록!' : '시간 끝!'}</h2>
-      <div class="starsbig" style="font-family:var(--f-display);letter-spacing:0">${score}점</div>
-      <p style="margin:0">${count}문제 풀이 · 최고점 ${S.best} · +${score} XP</p>
-      <button class="big red" id="again">한 번 더!</button><button class="big ghost" data-go="home">처음으로</button>
-    </div>`);
-    document.getElementById('again').onclick = speedRun;
-  }
-  function q() {
-    if (ended) return;
-    if (view !== 'speed') { clearInterval(timer); return; }
-    lock = false;
-    const d = pool[rnd(pool.length)];
-    const kind = rnd(4);
-    let prompt, opts, correct;
-    const others = pick(IDIOMS, 3, [d]);
-    if (kind === 0) { prompt = `<small>속뜻에 맞는 성어는?</small>${esc(d.mean)}`; opts = shuffle([d, ...others]).map(x => x.k); correct = d.k; }
-    else if (kind === 1) { prompt = `<small>이 한자 성어의 음은?</small><span class="han" style="font-size:34px">${esc(d.h)}</span>`; opts = shuffle([d, ...others]).map(x => x.k); correct = d.k; }
-    else if (kind === 2) { prompt = `<small>겉뜻에 맞는 성어는?</small>“${esc(d.lit)}”`; opts = shuffle([d, ...others]).map(x => x.k); correct = d.k; }
-    else { prompt = `<small>‘${esc(d.k)}’의 속뜻은?</small>`; opts = shuffle([d, ...others]).map(x => x.mean); correct = d.mean; }
-    const long = kind === 3;
-    render(`<div class="topbar"><button class="iconbtn" id="quit">그만하기</button><span class="spacer"></span><span class="chip">점수 ${score}</span><span class="chip" style="background:var(--seal);color:#fff;border-color:var(--seal)">⏱ <span id="tm">${time}</span>초</span></div>
-      <div class="panel"><div class="prompt">${prompt}</div>
-      <div class="opts" style="${long ? 'grid-template-columns:1fr' : ''}">${opts.map((o, i) => `<button class="opt ${long ? 'long' : ''}" data-i="${i}">${esc(o)}</button>`).join('')}</div></div>`);
-    document.getElementById('quit').onclick = () => { time = 0; end(); };
-    $app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
-      if (lock) return; lock = true; count++;
-      const ok = opts[+b.dataset.i] === correct;
-      b.classList.add(ok ? 'ok' : 'no');
-      if (ok) { combo++; score += 10 + Math.min(combo, 10); time += 2; beep('ok'); if (combo >= 3 && combo % 3 === 0) comboPop(combo); }
-      else { combo = 0; time = Math.max(0, time - 5); beep('no'); S.wrong[d.n] = (S.wrong[d.n] || 0) + 1; save();
-        $app.querySelectorAll('.opt').forEach(x => { if (opts[+x.dataset.i] === correct) x.classList.add('ok'); }); }
-      setTimeout(() => { if (time <= 0) end(); else q(); }, ok ? 350 : 1100);
+  const pool = seenList.length >= 6 ? seenList : IDIOMS;
+  const ROUNDS = 3, PAIRS = 6;
+  let round = 0, sec = 0, mistakes = 0, combo = 0, maxCombo = 0, matched = 0, ended = false;
+  const timer = setInterval(() => {
+    if (view !== 'pair' || ended) { clearInterval(timer); return; }
+    sec++; const t = document.getElementById('tm'); if (t) t.textContent = fmt(sec);
+  }, 1000);
+  const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  let used = [];
+  function board() {
+    const avail = pool.filter(d => !used.includes(d));
+    const set = pick(avail.length >= PAIRS ? avail : pool, PAIRS);
+    used.push(...set);
+    const kinds = ['han', 'mean', 'lit'];
+    const tiles = [];
+    set.forEach(d => {
+      const kind = mode === 'mix' ? kinds[rnd(3)] : mode;
+      tiles.push({ n: d.n, kind: 'k' }, { n: d.n, kind });
+    });
+    const order = shuffle(tiles);
+    render(`<div class="topbar"><button class="iconbtn" id="quit">그만하기</button><span class="chip">${round + 1} / ${ROUNDS}판</span><span class="spacer"></span>
+      <span class="chip">실수 ${mistakes}</span><span class="chip" style="background:var(--seal);color:#fff;border-color:var(--seal)">⏱ <span id="tm">${fmt(sec)}</span></span></div>
+      <div class="progress"><i style="width:${matched / (ROUNDS * PAIRS) * 100}%"></i></div>
+      <div class="panel"><div class="qhead"><span class="qnum">雙</span><span class="qtitle">${PAIR_MODES[mode].name} — 짝이 되는 카드 두 장을 누르세요.</span></div>
+      <div class="pairgrid">${order.map((t, i) => {
+        const d = IDIOMS[t.n - 1];
+        const body = t.kind === 'k' ? `<span class="pk">${esc(d.k)}</span>`
+          : t.kind === 'han' ? `<span class="ph han">${esc(d.h)}</span>`
+          : t.kind === 'mean' ? `<span class="pm"><em>속뜻</em>${esc(d.mean)}</span>`
+          : `<span class="pm"><em>겉뜻</em>${esc(d.lit)}</span>`;
+        return `<button class="ptile ${t.kind === 'k' ? 'isk' : ''}" data-i="${i}">${body}</button>`;
+      }).join('')}</div></div>`);
+    document.getElementById('quit').onclick = () => { ended = true; clearInterval(timer); pairIntro(); };
+    let sel = null, left = PAIRS, busy = false;
+    $app.querySelectorAll('.ptile').forEach(b => b.onclick = () => {
+      if (busy || b.classList.contains('pdone')) return;
+      if (!sel) { sel = b; b.classList.add('psel'); beep('tap'); return; }
+      if (sel === b) { b.classList.remove('psel'); sel = null; return; }
+      const A = order[+sel.dataset.i], B = order[+b.dataset.i];
+      const ok = A.n === B.n && A.kind !== B.kind;
+      if (ok) {
+        [sel, b].forEach(x => { x.classList.remove('psel'); x.classList.add('pdone'); x.disabled = true; });
+        sel = null; left--; matched++; combo++; maxCombo = Math.max(maxCombo, combo); beep('ok');
+        if (combo >= 3) comboPop(combo);
+        $app.querySelector('.progress > i').style.width = `${matched / (ROUNDS * PAIRS) * 100}%`;
+        if (left === 0) { round++; setTimeout(() => round < ROUNDS ? board() : finish(), 500); }
+      } else {
+        mistakes++; combo = 0; beep('no'); busy = true;
+        const d = IDIOMS[A.n - 1]; S.wrong[d.n] = (S.wrong[d.n] || 0) + 1; save();
+        [sel, b].forEach(x => x.classList.add('pbad'));
+        const chip = $app.querySelectorAll('.topbar .chip')[1]; if (chip) chip.textContent = `실수 ${mistakes}`;
+        const s0 = sel; sel = null;
+        setTimeout(() => { [s0, b].forEach(x => x.classList.remove('pbad', 'psel')); busy = false; }, 550);
+      }
     });
   }
-  q();
+  function finish() {
+    ended = true; clearInterval(timer);
+    const base = ROUNDS * PAIRS * 20;
+    const speedBonus = Math.max(0, 240 - sec) * 2;
+    const comboBonus = maxCombo * 5;
+    const score = Math.max(0, base + speedBonus + comboBonus - mistakes * 15);
+    const isBest = score > (S.pairBest || 0); if (isBest) S.pairBest = score;
+    const xp = Math.round(score / 4);
+    S.xp += xp; save(); beep('win'); confetti();
+    const stars = mistakes === 0 ? 3 : mistakes <= 3 ? 2 : 1;
+    render(`${topbar()}<div class="panel result">
+      <div class="starsbig">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
+      <h2>${isBest ? '새 최고 기록!' : '짝짓기 완성!'}</h2>
+      <div class="starsbig" style="font-family:var(--f-display);letter-spacing:0;font-size:44px">${score}점</div>
+      <div class="row" style="justify-content:center"><span class="chip">걸린 시간 ${fmt(sec)}</span><span class="chip">실수 ${mistakes}</span><span class="chip">최대 콤보 ${maxCombo}</span></div>
+      <p style="margin:0">최고점 ${S.pairBest} · +${xp} XP</p>
+      <button class="big red" id="again">같은 방식으로 한 번 더</button>
+      <button class="big ghost" data-go="speed">다른 방식 고르기</button>
+      <button class="big ghost" data-go="home">처음으로</button>
+    </div>`);
+    document.getElementById('again').onclick = () => pairRun(mode);
+  }
+  board();
 }
 
 /* ---------- 도감 ---------- */
