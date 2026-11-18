@@ -142,6 +142,17 @@ button.hc:active{transform:scale(.95)}
 .mbad{animation:shake .35s}
 .matchsvg{position:absolute;inset:0;pointer-events:none;overflow:visible}
 
+/* 성어 한 줄 보기: 글자 수(--n)에 맞춰 카드와 글자 크기를 줄임 */
+.one{display:flex;flex-wrap:nowrap!important;justify-content:center;gap:6px;width:100%;min-width:0;container-type:inline-size}
+.one>.hc{flex:0 0 auto;width:calc((100cqw - (var(--n) - 1) * 6px) / var(--n))!important;max-width:72px;min-width:0}
+.lh.one>.hc{max-width:84px}
+.one>.hc .ch{font-size:min(40px,calc(55cqw / var(--n)))!important;line-height:1.3}
+.lh.one>.hc .ch{font-size:min(44px,calc(58cqw / var(--n)))!important}
+.one>.hc .hun{font-size:clamp(10px,calc(18cqw / var(--n)),15px)!important;letter-spacing:-.03em;line-height:1.2;word-break:keep-all;padding:3px 1px;min-height:0}
+.one>.hc .eum{font-size:clamp(13px,calc(27cqw / var(--n)),20px)!important}
+@media (max-width:420px){.lcard{padding:16px 12px}}
+.mright.one{gap:3px;padding:6px 4px}.mright.one>.hc{max-width:46px;width:calc((100cqw - (var(--n) - 1) * 3px) / var(--n))!important}
+.sheet .mrow .hcards.one{justify-content:flex-start;flex:1}
 /* 짝짓기 */
 .pairgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .ptile{min-height:96px;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 8px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;text-align:center;word-break:keep-all;min-width:0;transition:transform .12s,opacity .3s,background .2s}
@@ -437,7 +448,7 @@ function map() {
 function learnCard(d) {
   return `<div class="lcard">
     <div class="row"><span class="kname">${esc(d.k)}</span><span class="spacer"></span><span class="chip">No.${d.n}</span></div>
-    <div class="hcards lh">${chars(d).map((c, i) => hc(c, d.hun[i], chars(d).length > 5 ? 'small' : '', 'div', '', syl(d)[i])).join('')}</div>
+    <div class="hcards lh one" style="--n:${chars(d).length}">${chars(d).map((c, i) => hc(c, d.hun[i], chars(d).length > 5 ? 'small' : '', 'div', '', syl(d)[i])).join('')}</div>
     <dl class="kv">
       <dt>겉뜻</dt><dd>${esc(d.lit)}</dd>
       <dt>속뜻</dt><dd><b>${esc(d.mean)}</b></dd>
@@ -519,7 +530,7 @@ function q1(G, q, head) {
   const d = q.d, cs = chars(d);
   render(`${hud(G)}<div class="panel">${head}
     <div class="prompt">${esc(d.k)}<small>${esc(d.lit)}</small></div>
-    <div class="hcards">${cs.map((c, i) => i === q.bi ? hc('?', d.hun[i], 'blank' + (cs.length > 5 ? ' small' : '')) : hc(c, d.hun[i], cs.length > 5 ? 'small' : '')).join('')}</div>
+    <div class="hcards one" style="--n:${cs.length}">${cs.map((c, i) => i === q.bi ? hc('?', d.hun[i], 'blank' + (cs.length > 5 ? ' small' : '')) : hc(c, d.hun[i], cs.length > 5 ? 'small' : '')).join('')}</div>
     <p class="muted" style="margin:0;text-align:center">‘${esc(d.hun[q.bi])} ${esc(syl(d)[q.bi])}’ 자는 어느 것일까요?</p>
     <div class="hcards">${q.opts.map(c => hc(c, '?', 'opt1', 'button', `data-c="${esc(c)}"`)).join('')}</div>
   </div>`);
@@ -538,7 +549,7 @@ function q2(G, q, head) {
   const draw = () => {
     render(`${hud(G)}<div class="panel">${head}
       <div class="prompt">“${esc(d.lit)}”</div>
-      <div class="hcards">${chars(d).map((c, i) => hc(c, d.hun[i], 'small')).join('')}</div>
+      <div class="hcards one" style="--n:${chars(d).length}">${chars(d).map((c, i) => hc(c, d.hun[i], 'small')).join('')}</div>
       <div class="slots">${need.map((_, i) => `<div class="slot ${got[i] ? 'fill' : ''}">${got[i] ? esc(got[i].s) : ''}</div>`).join('')}</div>
       <div class="tiles">${q.tiles.map((s, i) => `<button class="tile" data-i="${i}" ${got.some(g => g.i === i) ? 'disabled' : ''}>${esc(s)}</button>`).join('')}</div>
       <div class="row" style="justify-content:center"><button class="iconbtn" id="undo">한 글자 지우기</button></div>
@@ -580,7 +591,7 @@ function q4(G, q, head) {
     <p class="muted" style="margin:0">왼쪽 성어를 누른 뒤, 알맞은 한자 줄을 누르세요.</p>
     <div class="match" id="match">
       ${q.set.map((d, i) => `<button class="mleft" data-l="${d.n}" style="grid-row:${i + 1};grid-column:1">${esc(d.k)}</button>`).join('')}
-      ${q.right.map((d, i) => `<button class="mright" data-r="${d.n}" style="grid-row:${i + 1};grid-column:2" aria-label="${esc(d.h)}">${chars(d).map((c, k) => hc(c, d.hun[k])).join('')}</button>`).join('')}
+      ${q.right.map((d, i) => `<button class="mright one" data-r="${d.n}" style="grid-row:${i + 1};grid-column:2;--n:${chars(d).length}" aria-label="${esc(d.h)}">${chars(d).map((c, k) => hc(c, d.hun[k])).join('')}</button>`).join('')}
       <svg class="matchsvg" id="msvg"></svg>
     </div>
   </div>`);
@@ -883,7 +894,7 @@ function sheet(si) {
       <ol>${ord3.map(d => `<li>${esc(d.mean)} ${A('→ ' + d.k)}</li>`).join('')}</ol>
 
       <div class="sq"><i>4</i>다음 성어에 알맞은 한자를 찾아 선으로 연결하세요.</div>
-      ${(() => { const R = R4; const lab = '㉠㉡㉢㉣'; return set.map((d, i) => `<div class="mrow"><span>(${i + 1}) ${esc(d.k)} ${A(lab[R.indexOf(d)])}</span><span class="row" style="gap:4px">${lab[i]} ${chars(R[i]).map((c, k) => hc(c, R[i].hun[k], 'small')).join('')}</span></div>`).join(''); })()}
+      ${(() => { const R = R4; const lab = '㉠㉡㉢㉣'; return set.map((d, i) => `<div class="mrow"><span>(${i + 1}) ${esc(d.k)} ${A(lab[R.indexOf(d)])}</span><span class="row" style="gap:4px;flex-wrap:nowrap">${lab[i]} <span class="hcards one" style="--n:${chars(R[i]).length}">${chars(R[i]).map((c, k) => hc(c, R[i].hun[k], 'small')).join('')}</span></span></div>`).join(''); })()}
 
       <div class="sq"><i>5</i>문장의 빈칸에 들어갈 성어를 위 보기에서 골라 쓰세요.</div>
       <ol>${ord5.map(d => `<li>${esc(d.ex).replace(esc(d.k), '(　　　　　)')} ${A('→ ' + d.k)}</li>`).join('')}</ol>
