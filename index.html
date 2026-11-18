@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f80c9">
 <title>성어 서당</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +40,9 @@
   --good:#4cc98c;--good-soft:#173b2b;--bad:#f07777;--bad-soft:#432222;--shadow:0 2px 0 rgba(0,0,0,.35);color-scheme:dark}
 
 *{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{height:100%}
+body{margin:0;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -225,6 +233,8 @@ button.hc:active{transform:scale(.95)}
 }
 </style>
 
+</head>
+<body>
 <canvas id="fx"></canvas>
 <div class="app" id="app"></div>
 
@@ -889,3 +899,5 @@ function sheet(si) {
 home();
 })();
 </script>
+</body>
+</html>
