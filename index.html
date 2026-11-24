@@ -26,7 +26,7 @@
   --bad:#d64545;
   --bad-soft:#fde4e4;
   --shadow:0 2px 0 rgba(29,43,51,.12);
-  --pblue:#d3e6f6;--pblue-ink:#2a4d6e;--pcoral:#fbecb8;--pcoral-ink:#6b4f0c;--pmint:#d4eee2;--title:#5f97c9;
+  --pblue:#d3e6f6;--pblue-ink:#2a4d6e;--pcoral:#fbecb8;--pcoral-ink:#6b4f0c;--pmint:#d4eee2;--mint-ink:#245c43;--title:#5f97c9;
   --f-display:"Black Han Sans","Noto Sans KR",system-ui,sans-serif;
   --f-body:"Noto Sans KR",system-ui,-apple-system,sans-serif;
   --f-han:"Noto Serif KR","Batang","Songti SC",serif;
@@ -34,16 +34,16 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#121a1e;--surface:#1b262c;--ink:#e7eef0;--muted:#9bb0b8;--line:#33454d;
   --blue:#6fb0ec;--blue-soft:#1d3346;--seal:#ef6a5f;--seal-soft:#3e2120;--gold:#f0bb48;
-  --good:#4cc98c;--good-soft:#173b2b;--bad:#f07777;--bad-soft:#432222;--shadow:0 2px 0 rgba(0,0,0,.35);--pblue:#2a4357;--pblue-ink:#d6e9f9;--pcoral:#4c4120;--pcoral-ink:#fbe9b4;--pmint:#21402f;--title:#9cc6ee;color-scheme:dark}}
+  --good:#4cc98c;--good-soft:#173b2b;--bad:#f07777;--bad-soft:#432222;--shadow:0 2px 0 rgba(0,0,0,.35);--pblue:#2a4357;--pblue-ink:#d6e9f9;--pcoral:#4c4120;--pcoral-ink:#fbe9b4;--pmint:#21402f;--mint-ink:#c7f0dc;--title:#9cc6ee;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#121a1e;--surface:#1b262c;--ink:#e7eef0;--muted:#9bb0b8;--line:#33454d;
   --blue:#6fb0ec;--blue-soft:#1d3346;--seal:#ef6a5f;--seal-soft:#3e2120;--gold:#f0bb48;
-  --good:#4cc98c;--good-soft:#173b2b;--bad:#f07777;--bad-soft:#432222;--shadow:0 2px 0 rgba(0,0,0,.35);--pblue:#2a4357;--pblue-ink:#d6e9f9;--pcoral:#4c4120;--pcoral-ink:#fbe9b4;--pmint:#21402f;--title:#9cc6ee;color-scheme:dark}
+  --good:#4cc98c;--good-soft:#173b2b;--bad:#f07777;--bad-soft:#432222;--shadow:0 2px 0 rgba(0,0,0,.35);--pblue:#2a4357;--pblue-ink:#d6e9f9;--pcoral:#4c4120;--pcoral-ink:#fbe9b4;--pmint:#21402f;--mint-ink:#c7f0dc;--title:#9cc6ee;color-scheme:dark}
 
 *{box-sizing:border-box}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{height:100%}
-body{margin:0;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;-webkit-text-size-adjust:100%;text-size-adjust:100%;word-break:keep-all;overflow-wrap:anywhere}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -89,7 +89,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .stage .ids{font-size:13px;color:var(--muted);line-height:1.4}
 .stage .stars{color:var(--gold);letter-spacing:1px}
 .stage.locked{opacity:.45}
-.stage.cur{border-color:var(--seal)}
+.stage.cur{border-color:var(--title);box-shadow:0 0 0 2px var(--title)}
 
 /* 문제 영역 */
 .qhead{display:flex;align-items:center;gap:10px}
@@ -153,6 +153,25 @@ button.hc:active{transform:scale(.95)}
 @media (max-width:420px){.lcard{padding:16px 12px}}
 .mright.one{gap:3px;padding:6px 4px}.mright.one>.hc{max-width:46px;width:calc((100cqw - (var(--n) - 1) * 3px) / var(--n))!important}
 .sheet .mrow .hcards.one{justify-content:flex-start;flex:1}
+/* 난이도 */
+.sect{font-family:var(--f-display);font-weight:400;font-size:20px}
+.lvpick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.lvcard{border:2px solid var(--line);border-radius:16px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:4px;min-width:0;box-shadow:var(--shadow);background:var(--lvbg);color:var(--lvink)}
+.lvcard.on{border-color:var(--lvink);box-shadow:0 0 0 2px var(--lvink)}
+.lvcard .lvname{font-family:var(--f-display);font-size:24px}
+.lvcard .lvdesc{font-size:13px;line-height:1.4;word-break:keep-all}
+.lvcard .lvmeta{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.lvcard .bar{height:8px;background:var(--surface)}
+.lvcard .bar>i{background:var(--lvink)}
+.lv1{--lvbg:var(--pmint);--lvink:var(--mint-ink)}
+.lv2{--lvbg:var(--pblue);--lvink:var(--pblue-ink)}
+.lv3{--lvbg:var(--pcoral);--lvink:var(--pcoral-ink)}
+.lvtabs{display:flex;gap:8px;flex-wrap:wrap}
+.lvtab{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 16px;font-weight:700}
+.lvtab.on{background:var(--lvbg,var(--ink));color:var(--lvink,var(--bg));border-color:var(--lvink,var(--ink))}
+.lvb{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;background:var(--lvbg);color:var(--lvink);vertical-align:1px}
+.lcard .lvb{font-size:13px;padding:3px 12px}
+@media (max-width:420px){.lvcard{padding:10px 8px}.lvcard .lvname{font-size:21px}.lvcard .lvdesc{font-size:12px}}
 /* 짝짓기 */
 .pairgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .ptile{min-height:96px;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 8px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;text-align:center;word-break:keep-all;min-width:0;transition:transform .12s,opacity .3s,background .2s}
@@ -255,14 +274,38 @@ button.hc:active{transform:scale(.95)}
 (() => {
 const $app = document.getElementById('app');
 const STAGE_SIZE = 4;
-const STAGES = [];
-for (let i = 0; i < IDIOMS.length; i += STAGE_SIZE) STAGES.push(IDIOMS.slice(i, i + STAGE_SIZE));
+// 난이도별 설정: 초급은 하트가 많고 문제 수가 적으며 힌트가 더 많아요.
+const DIFF = {
+  1: { name: '초급', desc: '많이 들어 본 쉬운 성어', hearts: 5, cls: 'lv1' },
+  2: { name: '중급', desc: '교과서에 자주 나오는 성어', hearts: 4, cls: 'lv2' },
+  3: { name: '고급', desc: '어렵고 낯선 성어에 도전', hearts: 3, cls: 'lv3' }
+};
+const STAGES = [];   // { lv, no(난이도 안 단계 번호), set }
+const STAGE_OF = {}; // 성어 번호 → 단계 위치
+[1, 2, 3].forEach(lv => {
+  const list = IDIOMS.filter(d => d.lv === lv);
+  for (let i = 0; i < list.length; i += STAGE_SIZE) {
+    const set = list.slice(i, i + STAGE_SIZE);
+    set.forEach(d => { STAGE_OF[d.n] = STAGES.length; });
+    STAGES.push({ lv, no: i / STAGE_SIZE + 1, set });
+  }
+});
+const stagesOf = lv => STAGES.map((st, i) => ({ ...st, i })).filter(st => st.lv === lv);
+const stageName = si => `${DIFF[STAGES[si].lv].name} ${STAGES[si].no}단계`;
+const lvBadge = lv => `<span class="lvb ${DIFF[lv].cls}">${DIFF[lv].name}</span>`;
 
 /* ---------- 저장 ---------- */
-const KEY = 'seongeo-seodang-v1';
-const defaultState = () => ({ xp: 0, stars: {}, seen: {}, wrong: {}, best: 0, pairBest: 0, sound: true, unlockAll: false, streak: 0, lastDay: '' });
+const KEY = 'seongeo-seodang-v2';
+const defaultState = () => ({ xp: 0, stars: {}, seen: {}, wrong: {}, best: 0, pairBest: 0, sound: true, unlockAll: false, streak: 0, lastDay: '', level: 1 });
 let S = defaultState();
-try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(defaultState(), JSON.parse(raw)); } catch (e) {}
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) S = Object.assign(defaultState(), JSON.parse(raw));
+  else { // 예전 기록에서 경험치·도감·오답만 가져오기 (단계 구성이 바뀌어 별은 새로 시작)
+    const old = localStorage.getItem('seongeo-seodang-v1');
+    if (old) { const o = JSON.parse(old); Object.assign(S, { xp: o.xp || 0, seen: o.seen || {}, wrong: o.wrong || {}, pairBest: o.pairBest || 0, sound: o.sound !== false }); }
+  }
+} catch (e) {}
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
 /* ---------- 유틸 ---------- */
@@ -330,27 +373,27 @@ function comboPop(n) { const t = document.createElement('div'); t.className = 'c
 
 /* ---------- 문제 만들기 (학습지 형식) ---------- */
 // 1. 빈칸에 들어갈 한자 고르기  2. 겉뜻 보고 성어 만들기  3. 속뜻에 맞는 성어 고르기(보기)  4. 성어와 한자 짝 맞추기  5. 문장 속 빈칸 채우기
-function makeStageQuestions(set) {
+function makeStageQuestions(set, lv) {
   const qs = [];
-  shuffle(set).forEach(d => {
+  const sameLv = IDIOMS.filter(d => d.lv === lv);
+  const add = (sec, list) => list.forEach(q => qs.push({ ...q, sec }));
+  const q1s = () => shuffle(set).map(d => {
     const cs = chars(d);
     const cand = cs.map((c, i) => i).filter(i => !'之於而'.includes(cs[i]) || cs.length < 4);
     const bi = cand[rnd(cand.length)];
     const answer = cs[bi];
-    const opts = shuffle([answer, ...pick(ALL_HANJA, 5, cs)]);
-    qs.push({ type: 1, d, bi, answer, opts });
+    return { type: 1, d, bi, answer, opts: shuffle([answer, ...pick(ALL_HANJA, lv === 2 ? 3 : 5, cs)]), showHun: lv === 2 };
   });
-  shuffle(set).forEach(d => {
+  const q2s = n => shuffle(set).slice(0, n).map(d => {
     const need = syl(d);
-    const extra = pick(ALL_SYL, Math.max(3, 8 - need.length), need);
-    qs.push({ type: 2, d, tiles: shuffle([...need, ...extra]) });
+    const extra = pick(ALL_SYL, lv === 1 ? 2 : lv === 2 ? 3 : Math.max(3, 8 - need.length), need);
+    return { type: 2, d, tiles: shuffle([...need, ...extra]) };
   });
-  shuffle(set).forEach(d => qs.push({ type: 3, d, bogi: set.map(x => x.k) }));
-  qs.push({ type: 4, set: shuffle(set), right: shuffle(set) });
-  shuffle(set).forEach(d => {
-    const others = pick(IDIOMS, 3, [d]);
-    qs.push({ type: 5, d, opts: shuffle([d, ...others]) });
-  });
+  const q3s = () => shuffle(set).map(d => ({ type: 3, d, bogi: set.map(x => x.k) }));
+  const q4 = () => [{ type: 4, set: shuffle(set), right: shuffle(set), eum: lv === 1 }];
+  const q5s = () => shuffle(set).map(d => ({ type: 5, d, opts: lv === 1 ? shuffle(set) : shuffle([d, ...pick(sameLv, 3, [d])]) }));
+  if (lv === 1) { add(1, q3s()); add(2, q5s()); add(3, q2s(2)); add(4, q4()); }
+  else { add(1, q1s()); add(2, q2s(4)); add(3, q3s()); add(4, q4()); add(5, q5s()); }
   return qs;
 }
 const QTITLE = {
@@ -358,6 +401,7 @@ const QTITLE = {
   2: '다음 겉뜻에 알맞은 성어를 만드세요.',
   3: '다음 속뜻에 맞는 성어를 보기에서 고르세요.',
   4: '성어와 알맞은 한자를 찾아 연결하세요.',
+  6: '문장의 빈칸에 들어갈 성어를 보기에서 고르세요.',
   5: '문장의 빈칸에 들어갈 성어를 고르세요.'
 };
 
@@ -382,20 +426,43 @@ function go(v, arg) {
 }
 
 /* ---------- 홈 ---------- */
-function stageUnlocked(i) { return S.unlockAll || i === 0 || (S.stars[i - 1] || 0) > 0; }
+function stageUnlocked(i) {
+  const st = STAGES[i];
+  return S.unlockAll || st.no === 1 || (S.stars[i - 1] || 0) > 0;
+}
+function levelProgress(lv) {
+  const list = stagesOf(lv);
+  const cleared = list.filter(st => S.stars[st.i] > 0).length;
+  const stars = list.reduce((a, st) => a + (S.stars[st.i] || 0), 0);
+  const next = list.find(st => !(S.stars[st.i] > 0)) || list[0];
+  return { total: list.length, cleared, stars, next: next.i };
+}
+function levelPicker(onPick) {
+  return `<div class="lvpick">${[1, 2, 3].map(lv => {
+    const P = levelProgress(lv);
+    return `<button class="lvcard ${DIFF[lv].cls} ${S.level === lv ? 'on' : ''}" data-lv="${lv}" aria-pressed="${S.level === lv}">
+      <span class="lvname">${DIFF[lv].name}</span>
+      <span class="lvdesc">${DIFF[lv].desc}</span>
+      <span class="lvmeta">${P.cleared}/${P.total}단계 · ★${P.stars}</span>
+      <span class="bar"><i style="width:${P.cleared / P.total * 100}%"></i></span>
+    </button>`;
+  }).join('')}</div>`;
+}
+function bindLevelPicker(after) {
+  $app.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { beep('tap'); S.level = +b.dataset.lv; save(); after(); });
+}
 function home() {
   view = 'home';
   const L = levelInfo(S.xp);
-  const cleared = Object.values(S.stars).filter(x => x > 0).length;
   const collected = Object.keys(S.seen).length;
   const totalStars = Object.values(S.stars).reduce((a, b) => a + b, 0);
-  const next = STAGES.findIndex((_, i) => !(S.stars[i] > 0));
-  const nextIdx = next < 0 ? 0 : next;
+  const P = levelProgress(S.level);
+  const nxt = STAGES[P.next];
   const wrongN = Object.keys(S.wrong).length;
   render(`
   <div class="hero">
     <div class="seal" aria-hidden="true">成語</div>
-    <div><h1>성어 서당</h1><p>고사성어 204개를 한자·겉뜻·속뜻·문장으로 익히는 퀴즈 모험</p></div>
+    <div><h1>성어 서당</h1><p>고사성어 204개를 초급·중급·고급으로 나누어 익히는 퀴즈 모험</p></div>
   </div>
   <div class="levelcard">
     <div class="row"><span class="chip">Lv.${L.lv}</span><span class="lvtitle">${L.name}</span><span class="spacer"></span><span class="muted" style="font-size:14px">${L.max ? '최고 단계!' : `다음까지 ${L.need} XP`}</span></div>
@@ -406,13 +473,15 @@ function home() {
       <div class="stat"><b>${S.pairBest || 0}</b><span>짝짓기 최고점</span></div>
     </div>
   </div>
+  <h2 class="sect">난이도 고르기</h2>
+  ${levelPicker()}
   <div class="menu">
-    <button class="main" data-go="stage" data-arg="${nextIdx}"><span class="mt">▶ ${nextIdx + 1}단계 도전하기</span><span class="md">${STAGES[nextIdx].map(d => d.k).join(' · ')}</span></button>
-    <button data-go="map"><span class="mk">地圖</span><span class="mt">모험 지도</span><span class="md">51단계 · ${cleared}단계 통과</span></button>
-    <button data-go="speed"><span class="mk">雙</span><span class="mt">짝짓기 퀴즈</span><span class="md">카드 두 장을 짝지어요</span></button>
+    <button class="main" data-go="stage" data-arg="${P.next}"><span class="mt">▶ ${stageName(P.next)} 도전하기</span><span class="md">${nxt.set.map(d => d.k).join(' · ')}</span></button>
+    <button data-go="map"><span class="mk">地圖</span><span class="mt">모험 지도</span><span class="md">${DIFF[S.level].name} ${P.total}단계 · ${P.cleared}단계 통과</span></button>
+    <button data-go="speed"><span class="mk">雙</span><span class="mt">짝짓기 퀴즈</span><span class="md">${DIFF[S.level].name} 카드 두 장 짝짓기</span></button>
     <button data-go="dex"><span class="mk">圖鑑</span><span class="mt">성어 도감</span><span class="md">204장 카드 모으기</span></button>
     <button data-go="wrong"><span class="mk">錯</span><span class="mt">오답 노트</span><span class="md">${wrongN ? `다시 볼 성어 ${wrongN}개` : '틀린 문제가 여기에 모여요'}</span></button>
-    <button data-go="sheet" data-arg="${nextIdx}" style="grid-column:1/-1"><span class="mt">학습지 보기</span><span class="md">'어휘력이 독해력이다' 형식의 4문항 학습지 + 정답</span></button>
+    <button data-go="sheet" data-arg="${P.next}" style="grid-column:1/-1"><span class="mt">학습지 보기</span><span class="md">'어휘력이 독해력이다' 형식의 학습지 + 정답</span></button>
   </div>
   <div class="row noprint">
     <button class="iconbtn" id="snd">${S.sound ? '소리 켜짐' : '소리 꺼짐'}</button>
@@ -420,6 +489,7 @@ function home() {
     <span class="spacer"></span>
     <button class="iconbtn" id="rst">기록 지우기</button>
   </div>`);
+  bindLevelPicker(home);
   document.getElementById('snd').onclick = () => { S.sound = !S.sound; save(); home(); };
   document.getElementById('unl').onclick = () => { S.unlockAll = !S.unlockAll; save(); home(); toast(S.unlockAll ? '모든 단계를 열었어요' : '순서대로 열려요'); };
   const r = document.getElementById('rst');
@@ -432,22 +502,25 @@ function home() {
 /* ---------- 지도 ---------- */
 function map() {
   view = 'map';
-  const next = STAGES.findIndex((_, i) => !(S.stars[i] > 0));
-  render(`${topbar(`<span class="chip">★ ${Object.values(S.stars).reduce((a, b) => a + b, 0)}</span>`)}
+  const lv = S.level, P = levelProgress(lv);
+  const nq = lv === 1 ? 11 : 17;
+  render(`${topbar(`<span class="chip">★ ${P.stars} / ${P.total * 3}</span>`)}
   <h2 style="font-family:var(--f-display);font-weight:400;font-size:26px">모험 지도</h2>
-  <p class="muted" style="margin:0">한 단계에 성어 4개. 학습 카드로 익히고 17문제에 도전해요. 하트 3개를 모두 잃으면 다시 도전!</p>
-  <div class="mapgrid">${STAGES.map((set, i) => {
-    const st = S.stars[i] || 0, open = stageUnlocked(i);
-    return `<button class="stage ${open ? '' : 'locked'} ${i === next ? 'cur' : ''}" ${open ? `data-go="stage" data-arg="${i}"` : 'disabled'} aria-label="${i + 1}단계">
-      <span class="row" style="gap:6px"><span class="no">${String(i + 1).padStart(2, '0')}</span><span class="spacer"></span><span class="stars">${open ? '★'.repeat(st) + '☆'.repeat(3 - st) : '🔒'}</span></span>
-      <span class="ids">${set.map(d => d.k).join('<br>')}</span></button>`;
+  <div class="lvtabs" role="tablist">${[1, 2, 3].map(l => `<button role="tab" class="lvtab ${DIFF[l].cls} ${l === lv ? 'on' : ''}" data-lv="${l}" aria-selected="${l === lv}">${DIFF[l].name}</button>`).join('')}</div>
+  <p class="muted" style="margin:0">${DIFF[lv].name}: 한 단계에 성어 4개, ${nq}문제. 하트 ${DIFF[lv].hearts}개를 모두 잃으면 다시 도전!</p>
+  <div class="mapgrid">${stagesOf(lv).map(st => {
+    const i = st.i, stars = S.stars[i] || 0, open = stageUnlocked(i);
+    return `<button class="stage ${open ? '' : 'locked'} ${i === P.next ? 'cur' : ''}" ${open ? `data-go="stage" data-arg="${i}"` : 'disabled'} aria-label="${stageName(i)}">
+      <span class="row" style="gap:6px"><span class="no">${String(st.no).padStart(2, '0')}</span><span class="spacer"></span><span class="stars">${open ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '🔒'}</span></span>
+      <span class="ids">${st.set.map(d => d.k).join('<br>')}</span></button>`;
   }).join('')}</div>`);
+  bindLevelPicker(map);
 }
 
 /* ---------- 학습 카드 ---------- */
 function learnCard(d) {
   return `<div class="lcard">
-    <div class="row"><span class="kname">${esc(d.k)}</span><span class="spacer"></span><span class="chip">No.${d.n}</span></div>
+    <div class="row"><span class="kname">${esc(d.k)}</span><span class="spacer"></span>${lvBadge(d.lv)}</div>
     <div class="hcards lh one" style="--n:${chars(d).length}">${chars(d).map((c, i) => hc(c, d.hun[i], chars(d).length > 5 ? 'small' : '', 'div', '', syl(d)[i])).join('')}</div>
     <dl class="kv">
       <dt>겉뜻</dt><dd>${esc(d.lit)}</dd>
@@ -458,10 +531,10 @@ function learnCard(d) {
 function learnStage(si) {
   if (!stageUnlocked(si)) return map();
   view = 'learn';
-  const set = STAGES[si];
+  const set = STAGES[si].set;
   let i = 0;
   const draw = () => {
-    render(`${topbar(`<span class="chip">${si + 1}단계 · 학습 카드</span>`)}
+    render(`${topbar(`<span class="chip">${stageName(si)} · 학습 카드</span>`)}
     <div class="learn">${learnCard(set[i])}
       <div class="dots">${set.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
       <div class="row" style="flex-wrap:nowrap">
@@ -482,22 +555,25 @@ function learnStage(si) {
 /* ---------- 단계 플레이 ---------- */
 function playStage(si) {
   view = 'play';
-  const set = STAGES[si];
-  const qs = makeStageQuestions(set);
-  const G = { si, qs, idx: 0, hearts: 3, score: 0, combo: 0, maxCombo: 0, miss: 0, wrongIds: new Set() };
+  const { set, lv } = STAGES[si];
+  const qs = makeStageQuestions(set, lv);
+  const H = DIFF[lv].hearts;
+  const G = { si, lv, qs, idx: 0, hearts: H, maxH: H, score: 0, combo: 0, maxCombo: 0, miss: 0, wrongIds: new Set() };
   nextQ(G);
 }
+const heartStr = G => '♥'.repeat(Math.max(0, G.hearts)) + '♡'.repeat(G.maxH - Math.max(0, G.hearts));
 function hud(G) {
   return `<div class="topbar noprint"><button class="iconbtn" data-go="map">← 지도</button>
-    <span class="chip">${G.si + 1}단계</span><span class="spacer"></span>
-    <span class="chip">점수 ${G.score}</span><span class="hearts" aria-label="하트 ${G.hearts}개">${'♥'.repeat(G.hearts)}${'♡'.repeat(3 - G.hearts)}</span></div>
+    <span class="chip">${stageName(G.si)}</span><span class="spacer"></span>
+    <span class="chip">점수 ${G.score}</span><span class="hearts" aria-label="하트 ${G.hearts}개">${heartStr(G)}</span></div>
     <div class="progress"><i style="width:${G.idx / G.qs.length * 100}%"></i></div>`;
 }
 function nextQ(G) {
   if (G.hearts <= 0) return stageFail(G);
   if (G.idx >= G.qs.length) return stageClear(G);
   const q = G.qs[G.idx];
-  const head = `<div class="qhead"><span class="qnum">${q.type}</span><span class="qtitle">${QTITLE[q.type]}</span></div>`;
+  const title = q.type === 5 && G.lv === 1 ? QTITLE[6] : QTITLE[q.type];
+  const head = `<div class="qhead"><span class="qnum">${q.sec}</span><span class="qtitle">${title}</span></div>`;
   ({ 1: q1, 2: q2, 3: q3, 4: q4, 5: q5 })[q.type](G, q, head);
 }
 function answer(G, ok, d, extraHtml = '') {
@@ -532,7 +608,7 @@ function q1(G, q, head) {
     <div class="prompt">${esc(d.k)}<small>${esc(d.lit)}</small></div>
     <div class="hcards one" style="--n:${cs.length}">${cs.map((c, i) => i === q.bi ? hc('?', d.hun[i], 'blank' + (cs.length > 5 ? ' small' : '')) : hc(c, d.hun[i], cs.length > 5 ? 'small' : '')).join('')}</div>
     <p class="muted" style="margin:0;text-align:center">‘${esc(d.hun[q.bi])} ${esc(syl(d)[q.bi])}’ 자는 어느 것일까요?</p>
-    <div class="hcards">${q.opts.map(c => hc(c, '?', 'opt1', 'button', `data-c="${esc(c)}"`)).join('')}</div>
+    <div class="hcards">${q.opts.map(c => hc(c, q.showHun ? HANJA.get(c) : '?', 'opt1', 'button', `data-c="${esc(c)}"`)).join('')}</div>
   </div>`);
   $app.querySelectorAll('button.hc').forEach(b => b.onclick = () => {
     const ok = b.dataset.c === q.answer;
@@ -591,7 +667,7 @@ function q4(G, q, head) {
     <p class="muted" style="margin:0">왼쪽 성어를 누른 뒤, 알맞은 한자 줄을 누르세요.</p>
     <div class="match" id="match">
       ${q.set.map((d, i) => `<button class="mleft" data-l="${d.n}" style="grid-row:${i + 1};grid-column:1">${esc(d.k)}</button>`).join('')}
-      ${q.right.map((d, i) => `<button class="mright one" data-r="${d.n}" style="grid-row:${i + 1};grid-column:2;--n:${chars(d).length}" aria-label="${esc(d.h)}">${chars(d).map((c, k) => hc(c, d.hun[k])).join('')}</button>`).join('')}
+      ${q.right.map((d, i) => `<button class="mright one" data-r="${d.n}" style="grid-row:${i + 1};grid-column:2;--n:${chars(d).length}" aria-label="${esc(d.h)}">${chars(d).map((c, k) => hc(c, d.hun[k], '', 'div', '', q.eum ? syl(d)[k] : '')).join('')}</button>`).join('')}
       <svg class="matchsvg" id="msvg"></svg>
     </div>
   </div>`);
@@ -624,7 +700,7 @@ function q4(G, q, head) {
       errors++; beep('no'); b.classList.add('mbad'); setTimeout(() => b.classList.remove('mbad'), 400);
       const d = IDIOMS[+selL.dataset.l - 1];
       G.wrongIds.add(d.n); S.wrong[d.n] = (S.wrong[d.n] || 0) + 1; save();
-      if (errors === 2) { G.hearts--; G.miss++; G.combo = 0; $app.querySelector('.hearts').innerHTML = '♥'.repeat(G.hearts) + '♡'.repeat(3 - G.hearts); if (G.hearts <= 0) finishMatch(); }
+      if (errors === 2) { G.hearts--; G.miss++; G.combo = 0; $app.querySelector('.hearts').innerHTML = heartStr(G); if (G.hearts <= 0) finishMatch(); }
     }
   });
   function finishMatch() {
@@ -659,32 +735,45 @@ function stageClear(G) {
   const bonus = G.hearts * 10 + (stars > prev ? (stars - prev) * 30 : 0);
   const gained = G.score + bonus;
   const before = levelInfo(S.xp).lv;
+  const { set, lv } = STAGES[G.si];
   S.xp += gained; S.stars[G.si] = Math.max(prev, stars);
-  STAGES[G.si].forEach(d => { S.seen[d.n] = 1; if (!G.wrongIds.has(d.n) && S.wrong[d.n]) delete S.wrong[d.n]; });
+  set.forEach(d => { S.seen[d.n] = 1; if (!G.wrongIds.has(d.n) && S.wrong[d.n]) delete S.wrong[d.n]; });
   const t = todayStr(); if (S.lastDay !== t) { S.streak = (S.lastDay === new Date(Date.now() - 864e5).toISOString().slice(0, 10)) ? S.streak + 1 : 1; S.lastDay = t; }
   save(); beep('win'); confetti();
   const L = levelInfo(S.xp);
-  const hasNext = G.si + 1 < STAGES.length;
+  const nextSt = STAGES[G.si + 1];
+  const sameLvNext = nextSt && nextSt.lv === lv;
+  const P = levelProgress(lv);
+  let nextBtn;
+  if (sameLvNext) nextBtn = `<button class="big red" data-go="stage" data-arg="${G.si + 1}">${stageName(G.si + 1)}로 →</button>`;
+  else if (lv < 3) nextBtn = `<p style="margin:0"><b>${DIFF[lv].name} 마지막 단계까지 왔어요!</b>${P.cleared < P.total ? ` 남은 단계 ${P.total - P.cleared}개도 지도에서 도전해 보세요.` : ''}</p><button class="big red" id="nextlv">${DIFF[lv + 1].name}으로 올라가기 →</button>`;
+  else nextBtn = '<p style="margin:0"><b>고급 마지막 단계까지 정복했어요!</b></p>';
   render(`${topbar()}<div class="panel result">
     <div class="starsbig">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
-    <h2>${G.si + 1}단계 통과!</h2>
+    <h2>${stageName(G.si)} 통과!</h2>
     <div class="row" style="justify-content:center"><span class="chip">점수 ${G.score}</span><span class="chip">하트 보너스 +${G.hearts * 10}</span><span class="chip">최대 콤보 ${G.maxCombo}</span></div>
     <p style="margin:0"><b>+${gained} XP</b> · ${L.lv > before ? `<b style="color:var(--seal)">레벨 업! ‘${L.name}’이 되었어요</b>` : `Lv.${L.lv} ${L.name}`}</p>
-    <p class="muted" style="margin:0">성어 카드 4장을 도감에 모았어요: ${STAGES[G.si].map(d => d.k).join(', ')}</p>
-    ${hasNext ? `<button class="big red" data-go="stage" data-arg="${G.si + 1}">${G.si + 2}단계로 →</button>` : '<p><b>204개 성어를 모두 정복했어요!</b></p>'}
+    <p class="muted" style="margin:0">성어 카드 ${set.length}장을 도감에 모았어요: ${set.map(d => d.k).join(', ')}</p>
+    ${nextBtn}
     <button class="big ghost" data-go="stage" data-arg="${G.si}">다시 도전해서 별 모으기</button>
     <button class="big ghost" data-go="sheet" data-arg="${G.si}">이 단계 학습지 보기</button>
   </div>`);
+  const nl = document.getElementById('nextlv');
+  if (nl) nl.onclick = () => { S.level = lv + 1; save(); map(); };
 }
 function stageFail(G) {
   S.xp += Math.floor(G.score / 2); save();
+  const easier = G.lv > 1 ? `<button class="big ghost" id="easier">${DIFF[G.lv - 1].name}으로 연습하기</button>` : '';
   render(`${topbar()}<div class="panel result">
     <div class="starsbig" style="color:var(--muted)">☆☆☆</div>
     <h2>하트를 모두 잃었어요</h2>
     <p style="margin:0">괜찮아요! 학습 카드를 한 번 더 보고 다시 도전해 봐요.<br><span class="muted">위로 XP +${Math.floor(G.score / 2)}</span></p>
     <button class="big red" data-go="stage" data-arg="${G.si}">학습 카드부터 다시</button>
+    ${easier}
     <button class="big ghost" data-go="map">지도로</button>
   </div>`);
+  const e = document.getElementById('easier');
+  if (e) e.onclick = () => { S.level = G.lv - 1; save(); map(); };
 }
 
 /* ---------- 짝짓기 퀴즈 ---------- */
@@ -695,20 +784,24 @@ const PAIR_MODES = {
 };
 function pairIntro() {
   view = 'pair';
-  const seenN = Object.keys(S.seen).length;
-  const pool = seenN >= 6 ? `모은 성어 카드 ${seenN}개` : '204개 전체 성어';
+  const lvList = IDIOMS.filter(d => d.lv === S.level);
+  const seenN = lvList.filter(d => S.seen[d.n]).length;
+  const pool = seenN >= 6 ? `${DIFF[S.level].name}에서 모은 성어 ${seenN}개` : `${DIFF[S.level].name} 성어 ${lvList.length}개 전체`;
   render(`${topbar()}<div class="panel">
     <div class="result"><div class="seal" style="margin:0 auto">雙</div><h2>짝짓기 퀴즈</h2>
     <p style="margin:0">카드 12장 중에서 서로 짝이 되는 두 장을 차례로 누르세요.<br>3판을 빨리, 실수 없이 끝낼수록 점수가 높아요!</p>
     <p class="muted" style="margin:0">출제 범위: ${pool} · 최고점 ${S.pairBest || 0}</p></div>
+    <div class="lvtabs" role="tablist">${[1, 2, 3].map(l => `<button role="tab" class="lvtab ${DIFF[l].cls} ${l === S.level ? 'on' : ''}" data-lv="${l}" aria-selected="${l === S.level}">${DIFF[l].name}</button>`).join('')}</div>
     <div class="menu">${Object.entries(PAIR_MODES).map(([k, m]) => `<button data-mode="${k}" ${k === 'mix' ? 'style="grid-column:1/-1"' : ''}><span class="mk">${m.mk}</span><span class="mt">${m.name}</span><span class="md">${m.desc}</span></button>`).join('')}</div>
   </div>`);
   $app.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { beep('tap'); pairRun(b.dataset.mode); });
+  bindLevelPicker(pairIntro);
 }
 function pairRun(mode) {
   view = 'pair';
-  const seenList = IDIOMS.filter(d => S.seen[d.n]);
-  const pool = seenList.length >= 6 ? seenList : IDIOMS;
+  const lvList = IDIOMS.filter(d => d.lv === S.level);
+  const seenList = lvList.filter(d => S.seen[d.n]);
+  const pool = seenList.length >= 6 ? seenList : lvList;
   const ROUNDS = 3, PAIRS = 6;
   let round = 0, sec = 0, mistakes = 0, combo = 0, maxCombo = 0, matched = 0, ended = false;
   const timer = setInterval(() => {
@@ -795,24 +888,29 @@ function dex() {
   const n = Object.keys(S.seen).length;
   render(`${topbar(`<span class="chip">${n} / 204</span>`)}
     <h2 style="font-family:var(--f-display);font-weight:400;font-size:26px">성어 도감</h2>
+    <div class="lvtabs" role="tablist">${['전체', 1, 2, 3].map(l => `<button role="tab" class="lvtab ${l === '전체' ? '' : DIFF[l].cls} ${l === '전체' ? 'on' : ''}" data-f="${l}">${l === '전체' ? '전체' : DIFF[l].name}</button>`).join('')}</div>
     <input class="search" id="q" placeholder="성어나 뜻으로 찾기 (예: 친구, 호랑이)" autocomplete="off">
     <div class="dex" id="dexgrid"></div>`);
   const grid = document.getElementById('dexgrid');
-  const draw = term => {
+  let filt = '전체', term = '';
+  const draw = () => {
     const t = term.trim();
-    const list = IDIOMS.filter(d => !t || (S.seen[d.n] || S.unlockAll) && (d.k.includes(t) || d.mean.includes(t) || d.lit.includes(t) || d.h.includes(t)) || d.k.includes(t));
+    const list = IDIOMS.filter(d => filt === '전체' || d.lv === +filt).filter(d => !t || (S.seen[d.n] || S.unlockAll) && (d.k.includes(t) || d.mean.includes(t) || d.lit.includes(t) || d.h.includes(t)) || d.k.includes(t));
     grid.innerHTML = list.map(d => {
       const open = S.seen[d.n];
-      return `<button class="dexcard ${open ? '' : 'lock'}" data-n="${d.n}"><span class="n">No.${d.n} · ${Math.ceil(d.n / 4)}단계</span><span class="h">${esc(d.h)}</span><span class="k">${esc(d.k)}</span></button>`;
+      return `<button class="dexcard ${open ? '' : 'lock'}" data-n="${d.n}"><span class="n">${lvBadge(d.lv)} ${STAGES[STAGE_OF[d.n]].no}단계</span><span class="h">${esc(d.h)}</span><span class="k">${esc(d.k)}</span></button>`;
     }).join('') || '<p class="muted">찾는 성어가 없어요.</p>';
     grid.querySelectorAll('.dexcard').forEach(b => b.onclick = () => {
       const d = IDIOMS[+b.dataset.n - 1];
-      if (!S.seen[d.n]) return toast(`${Math.ceil(d.n / 4)}단계를 통과하면 열려요`);
+      if (!S.seen[d.n]) return toast(`${stageName(STAGE_OF[d.n])}를 통과하면 열려요`);
       modal(learnCard(d));
     });
   };
-  document.getElementById('q').oninput = e => draw(e.target.value);
-  draw('');
+  document.getElementById('q').oninput = e => { term = e.target.value; draw(); };
+  $app.querySelectorAll('[data-f]').forEach(b => b.onclick = () => {
+    filt = b.dataset.f; $app.querySelectorAll('[data-f]').forEach(x => x.classList.toggle('on', x === b)); draw();
+  });
+  draw();
 }
 function modal(inner) {
   const bg = document.createElement('div'); bg.className = 'modalbg';
@@ -868,7 +966,7 @@ function review(items) {
 /* ---------- 학습지 (원본 형식) ---------- */
 function sheet(si) {
   view = 'sheet';
-  const set = STAGES[si];
+  const set = STAGES[si].set;
   let showAns = false;
   const inFrame = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
   const allC = set.flatMap(chars);
@@ -878,10 +976,10 @@ function sheet(si) {
     // 문항1: 각 성어의 한자 중 하나씩 + 오답 한자 → 해당 성어에 들어가는 한자에 ○
     const A = s => showAns ? `<span class="ans">${esc(s)}</span>` : '';
     render(`<div class="topbar noprint"><button class="iconbtn" data-go="home">← 처음</button>
-      <button class="iconbtn" id="prev" ${si === 0 ? 'disabled' : ''}>◀</button><span class="chip">${si + 1} / ${STAGES.length}</span><button class="iconbtn" id="next" ${si === STAGES.length - 1 ? 'disabled' : ''}>▶</button>
+      <button class="iconbtn" id="prev" ${si === 0 ? 'disabled' : ''}>◀</button><span class="chip">${stageName(si)}</span><button class="iconbtn" id="next" ${si === STAGES.length - 1 ? 'disabled' : ''}>▶</button>
       <span class="spacer"></span><button class="iconbtn" id="ans">${showAns ? '정답 숨기기' : '정답 보기'}</button>${inFrame ? '' : '<button class="iconbtn" id="pr">인쇄</button>'}</div>
     <div class="sheet" id="sheetbox">
-      <div class="shead">${String(si + 1).padStart(2, '0')} | ${set.map(d => d.k).join(' · ')}</div>
+      <div class="shead">${stageName(si)} | ${set.map(d => d.k).join(' · ')}</div>
       <div class="sq"><i>1</i><span>보기의 성어의 <b>첫 글자</b>에 해당하는 한자에 ○ 하세요.</span></div>
       <div class="bx"><b>보기</b>${set.map(d => `<span>${esc(d.k)}</span>`).join('')}</div>
       <div class="hcards">${pool.map(c => hc(c, HANJA.get(c), 'small', 'div', showAns && set.some(d => chars(d)[0] === c) ? 'style="outline:3px solid #c8372d;border-radius:50%"' : '')).join('')}</div>
